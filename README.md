@@ -1,5 +1,4 @@
-Objective of this project is to create a script which can return longitude and latitude information of the client machine by utilizing
-wifi-geolocation API of Google.
+Objective of this project is to create a script which can return longitude and latitude information of the client machine by utilizing wifi-geolocation API of Google.
 
 Specific tasks:
 1- Grab wifi names, mac addresses, signal strength and other relevant information (Ongoing)
