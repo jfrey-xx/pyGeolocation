@@ -1,4 +1,4 @@
-<h1>pyGEOLOCATION</h1>
+<h1>pyGeolocation</h1>
 Objective of this project is to create a script which can return longitude and latitude information of the client machine by utilizing wifi-geolocation API of Google.
 
 Specific tasks:
