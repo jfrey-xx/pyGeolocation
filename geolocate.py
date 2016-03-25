@@ -1,6 +1,8 @@
 import requests
 import json
 import subprocess
+import googlemaps
+import decimal
 
 geolocateApiKey="<YOUR API KEY>"
 
@@ -11,7 +13,8 @@ class WifiGrab:
         self.results = self.results.split("\n")  # Splitting the result of our netsh command into a list containing each line
         self.ssids = []
         self.bssids = []
-        self.signals = []
+        self.rssi = []
+        self.channel = []
 
     def all(self):
         x = 0  # For traversing self.results
@@ -26,26 +29,35 @@ class WifiGrab:
                 bssidLineSplit = self.results[x + 4].split()
                 self.bssids.append(bssidLineSplit[len(bssidLineSplit) - 1])
 
-                signalLine = self.results[x + 5]
-                signalLineSplit = self.results[x + 5].split()
-                signal = signalLineSplit[len(signalLineSplit) - 1]
-                self.signals.append(int(signal[:len(signal) - 1]))
+                rssiLine = self.results[x + 5]
+                rssiLineSplit = self.results[x + 5].split()
+                rssi = rssiLineSplit[len(rssiLineSplit) - 1]  # this value is actually signal quality in percentage
+                rssi = int(rssi[:len(rssi) - 1])  # Drop the percentage sign and convert to int
+                rssi = (rssi/2) - 100  # actual RSSI value
+                self.rssi.append(rssi)
+
+                channelLine = self.results[x+7]
+                channelLineSplit = channelLine.split()
+                channel = channelLineSplit[len(channelLineSplit)-1]
+                self.channel.append(channel)
             x += 1
-        return self.ssids, self.bssids, self.signals
+        return self.ssids, self.bssids, self.rssi, self.channel
 
 
-class BuildGoogleObject:
+class geolocate:
     def __init__(self, key=geolocateApiKey):
         global geolocateApiKey
 
         self.key = key
         self.url = "https://www.googleapis.com/geolocation/v1/geolocate?key=" + self.key
+        self.gmaps = googlemaps.Client(key=self.key)  # For reverse geocoding google geolocation response
+
 
         self.response = []
         self.payload = {}
 
         self.WifiObject = WifiGrab()  # to grab BSSIDs
-        self.ssids, self.bssids, self.signals = self.WifiObject.all()
+        self.ssids, self.bssids, self.rssi, self.channel = self.WifiObject.all()
 
     def buildJSON(self):
         if len(self.bssids) < 3:
@@ -59,13 +71,15 @@ class BuildGoogleObject:
         for i in range(0,len(self.bssids)):
             self.payload["wifiAccessPoints"].append({})
             self.payload['wifiAccessPoints'][i]['macAddress'] = self.bssids[i]
+            self.payload['wifiAccessPoints'][i]['signalStrength'] = self.rssi[i]
+            self.payload['wifiAccessPoints'][i]['channel'] = self.channel[i]
 
         self.headers = {
             'content-type': 'application/json',
         }
         # Payload structure reference: https://developers.google.com/maps/documentation/geolocation/intro#body
 
-    def importJSON(self):
+    def importJSON(self):  # Import JSON payload from file
         self.payload = json.load(open("geolocate.json"))
         self.headers = {
             'content-type': 'application/json',
@@ -78,15 +92,29 @@ class BuildGoogleObject:
             print str(e)
 
     def replaceKey(self, key):  # Replace geolocate API key
-        self.url = "https://www.googleapis.com/geolocation/v1/geolocate?key=" + key
+        self.key = key
 
     def printResponse(self):
         try:
-            print json.loads(self.response.text)
+            print self.getResponse()
         except Exception, e:
             print str(e)
 
-geolocateObject = BuildGoogleObject(geolocateApiKey)  # replace geolocateApiKey variable at the top with your API key
-geolocateObject.buildJSON()  # build JSON request object
-geolocateObject.request()    # Send request to google
-geolocateObject.printResponse()  # Print response from google
+    def getPayload(self):
+        return self.payload
+
+    def getResponse(self):
+        return json.loads(self.response.text)
+
+    def getLongLat(self):
+        response = json.loads(self.response.text)
+        decimal.getcontext().prec = 15  # Setting precision for lat/lng response
+        lng = decimal.Decimal(response['location']['lng']) + 0
+        lat = decimal.Decimal(response['location']['lat']) + 0
+        return lat, lng
+
+geolocateMe = geolocate(geolocateApiKey)    # replace geolocateApiKey variable at the top with your API key
+geolocateMe.buildJSON()                     # build JSON request object
+geolocateMe.request()                       # Send request to google
+geolocateMe.printResponse()                 # Print response from google
+geolocateMe.getLongLat()
