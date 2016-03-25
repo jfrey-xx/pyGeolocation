@@ -9,4 +9,4 @@ Specific tasks:
 As of 13-March-16, the script can grab BSSIDs from your vicinity, creates a JSON request and print the response.
 
 <h2>USAGE</h2>
-python geolocate.py <YOUR API KEY>
+python geolocate.py <i>YOUR API KEY</i>
