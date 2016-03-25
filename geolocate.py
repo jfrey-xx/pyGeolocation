@@ -3,9 +3,17 @@ import json
 import subprocess
 import googlemaps
 import decimal
-from sys import argv
+from sys import exit as sysExit
+import argparse
+from reverseGeocode import ReverseGeocode
 
-geolocateApiKey=argv[1]
+parser = argparse.ArgumentParser(prog='python geolocate.py')
+parser.add_argument('geolocateApiKey', help='Your Geolocate API key. \nGet it from here: https://developers.google.com/maps/documentation/geocoding/get-api-key#key')
+parser.add_argument('geocodeApiKey', help='Your Geocode API key')
+args = parser.parse_args()
+
+geolocateApiKey=args.geolocateApiKey
+geocodeApiKey=args.geocodeApiKey
 
 class WifiGrab:
     def __init__(self):
@@ -112,10 +120,23 @@ class geolocate:
         decimal.getcontext().prec = 15  # Setting precision for lat/lng response
         lng = decimal.Decimal(response['location']['lng']) + 0
         lat = decimal.Decimal(response['location']['lat']) + 0
-        return lat, lng
+        accuracy = response['accuracy']
+        return lat, lng, accuracy
 
 geolocateMe = geolocate(geolocateApiKey)    # replace geolocateApiKey variable at the top with your API key
 geolocateMe.buildJSON()                     # build JSON request object
 geolocateMe.request()                       # Send request to google
-geolocateMe.printResponse()                 # Print response from google
-geolocateMe.getLongLat()
+# geolocateMe.printResponse()                 # Print response from google
+
+# Printing
+lat, lng, accuracy = geolocateMe.getLongLat()
+print 'Your geographic coordinates: '
+print 'Latitude\t'+ str(lat)
+print 'Longitude\t'+ str(lng)
+print 'Accuracy\t' + str(accuracy) + 'm' + '\n\n'
+
+# Using longitude and latitude information to print your address. The result will be formatted in several different ways
+print 'Your physical address (formatted) is as follows:'
+reverseGeocodeMe = ReverseGeocode(lat, lng, geocodeApiKey)
+reverseGeocodeMe.request()
+reverseGeocodeMe.printResponse()
