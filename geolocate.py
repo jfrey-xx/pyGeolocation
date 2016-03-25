@@ -3,8 +3,9 @@ import json
 import subprocess
 import googlemaps
 import decimal
+from sys import argv
 
-geolocateApiKey="<YOUR API KEY>"
+geolocateApiKey=argv[1]
 
 class WifiGrab:
     def __init__(self):
