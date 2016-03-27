@@ -35,8 +35,3 @@ class ReverseGeocode:
 
     def getResponse(self):
         return json.loads(self.response.text)
-
-
-#rGeocode = ReverseGeocode('33.701282299999995', '72.9798076', geocodeApiKey)  # replace geocodeApiKey variable at the top with your API key
-#rGeocode.request()    # Send request to google
-#rGeocode.printResponse()  # Print response from google
