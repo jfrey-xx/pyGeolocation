@@ -9,3 +9,5 @@ Capabilities:<br />
 <h2>USAGE</h2>
 python geolocate.py <i>Geolocation-api-key Google-maps-api-key</i><br />
 python geolocate.py -h
+
+<a href="https://developers.google.com/maps/terms#1-your-relationship-with-google">Terms and conditions</a> for using the Google API.
