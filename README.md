@@ -7,5 +7,5 @@ Capabilities:<br />
 3- Reverse-geocode longitude/latitude into human-readable physical addresses.<br />
 
 <h2>USAGE</h2>
-python geolocate.py <i>GEOLOCATION-API-KEY GEOCODE-API-KEY</i><br />
+python geolocate.py <i>Geolocation-api-key Geocode-api-key Google-maps-api-key</i><br />
 python geolocate.py -h
