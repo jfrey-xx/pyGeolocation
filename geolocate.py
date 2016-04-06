@@ -10,12 +10,10 @@ import myMap
 
 parser = argparse.ArgumentParser(prog='python geolocate.py')
 parser.add_argument('geolocateApiKey', help='Your Geolocate API key. \nGet it from here: https://developers.google.com/maps/documentation/geocoding/get-api-key#key')
-parser.add_argument('geocodeApiKey', help='Your Geocode API key')
 parser.add_argument('googlemapsApiKey', help='Your google maps ALI key')
 args = parser.parse_args()
 
 geolocateApiKey=args.geolocateApiKey
-geocodeApiKey=args.geocodeApiKey
 googlemapsApiKey=args.googlemapsApiKey
 
 class geolocate:
@@ -122,6 +120,6 @@ print 'Accuracy\t' + str(accuracy) + 'm' + '\n\n'
 
 # Using longitude and latitude information to print your address. The result will be formatted in several different ways
 print 'Your physical address (formatted) is as follows:'
-reverseGeocodeMe = ReverseGeocode(lat, lng, geocodeApiKey)
+reverseGeocodeMe = ReverseGeocode(lat, lng, googlemapsApiKey)
 reverseGeocodeMe.request()
 reverseGeocodeMe.printResponse()
