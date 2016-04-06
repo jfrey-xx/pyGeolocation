@@ -1,20 +1,22 @@
 import requests
 import json
-import subprocess
 import googlemaps
 import decimal
 from sys import exit as sysExit
 import argparse
 from reverseGeocode import ReverseGeocode
 import wifiScannerWindows
+import myMap
 
 parser = argparse.ArgumentParser(prog='python geolocate.py')
 parser.add_argument('geolocateApiKey', help='Your Geolocate API key. \nGet it from here: https://developers.google.com/maps/documentation/geocoding/get-api-key#key')
 parser.add_argument('geocodeApiKey', help='Your Geocode API key')
+parser.add_argument('googlemapsApiKey', help='Your google maps ALI key')
 args = parser.parse_args()
 
 geolocateApiKey=args.geolocateApiKey
 geocodeApiKey=args.geocodeApiKey
+googlemapsApiKey=args.googlemapsApiKey
 
 class geolocate:
     def __init__(self, key=geolocateApiKey):
@@ -104,6 +106,12 @@ geolocateMe = geolocate(geolocateApiKey)    # replace geolocateApiKey variable a
 geolocateMe.buildJSON(considerIP='true')    # build JSON request object
 geolocateMe.request()                       # Send request to google
 # geolocateMe.printResponse()               # Print response from google
+
+# opening map
+lat, lng, accuracy = geolocateMe.getLongLat()
+mapObj = myMap.htmlMap(googlemapsApiKey, lat, lng, accuracy)
+mapObj.createMap(map='yourLocation.html')
+mapObj.openMap()
 
 # Printing
 lat, lng, accuracy = geolocateMe.getLongLat()
