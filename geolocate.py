@@ -1,6 +1,5 @@
 import requests
 import json
-import googlemaps
 import decimal
 from sys import exit as sysExit
 import argparse
@@ -22,7 +21,6 @@ class geolocate:
 
         self.key = key
         self.url = "https://www.googleapis.com/geolocation/v1/geolocate?key=" + self.key
-        self.gmaps = googlemaps.Client(key=self.key)  # For reverse geocoding google geolocation response
 
         self.response = []
         self.payload = {}
