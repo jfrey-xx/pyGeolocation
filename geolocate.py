@@ -4,7 +4,7 @@ import decimal
 from sys import exit as sysExit
 import argparse
 from reverseGeocode import ReverseGeocode
-import wifiScannerWindows
+import wifiScannerLinux
 import myMap
 
 parser = argparse.ArgumentParser(prog='python geolocate.py')
@@ -25,7 +25,7 @@ class geolocate:
         self.response = []
         self.payload = {}
 
-        self.WifiObject = wifiScannerWindows.WifiGrab()  # to grab BSSIDs
+        self.WifiObject = wifiScannerLinux.WifiGrab()  # to grab BSSIDs
         self.ssids, self.bssids, self.rssi, self.channel = self.WifiObject.all()
 
     def buildJSON(self, considerIP='true'):
