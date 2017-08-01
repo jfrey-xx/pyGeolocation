@@ -9,11 +9,11 @@ import myMap
 
 parser = argparse.ArgumentParser(prog='python geolocate.py')
 parser.add_argument('geolocateApiKey', help='Your Geolocate API key. \nGet it from here: https://developers.google.com/maps/documentation/geocoding/get-api-key#key')
-parser.add_argument('googlemapsApiKey', help='Your google maps ALI key')
+#parser.add_argument('googlemapsApiKey', help='Your google maps ALI key')
 args = parser.parse_args()
 
 geolocateApiKey=args.geolocateApiKey
-googlemapsApiKey=args.googlemapsApiKey
+#googlemapsApiKey=args.googlemapsApiKey
 
 class geolocate:
     def __init__(self, key=geolocateApiKey):
@@ -116,11 +116,6 @@ geolocateMe.buildJSON(considerIP='true')    # build JSON request object
 geolocateMe.request()                       # Send request to google
 # geolocateMe.printResponse()               # Print response from google
 
-# opening map
-lat, lng, accuracy = geolocateMe.getLongLat()
-mapObj = myMap.htmlMap(googlemapsApiKey, lat, lng, accuracy)
-mapObj.createMap(map='yourLocation.html')
-mapObj.openMap()
 
 # Printing
 lat, lng, accuracy = geolocateMe.getLongLat()
@@ -129,8 +124,15 @@ print 'Latitude\t'+ str(lat)
 print 'Longitude\t'+ str(lng)
 print 'Accuracy\t' + str(accuracy) + 'm' + '\n\n'
 
+
+# opening map
+#mapObj = myMap.htmlMap(googlemapsApiKey, lat, lng, accuracy)
+#mapObj.createMap(map='yourLocation.html')
+#mapObj.openMap()
+
+
 # Using longitude and latitude information to print your address. The result will be formatted in several different ways
-print 'Your physical address (formatted) is as follows:'
-reverseGeocodeMe = ReverseGeocode(lat, lng, googlemapsApiKey)
-reverseGeocodeMe.request()
-reverseGeocodeMe.printResponse()
+#print 'Your physical address (formatted) is as follows:'
+#reverseGeocodeMe = ReverseGeocode(lat, lng, googlemapsApiKey)
+#reverseGeocodeMe.request()
+#reverseGeocodeMe.printResponse()
