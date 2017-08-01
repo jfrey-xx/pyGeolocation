@@ -28,6 +28,12 @@ class geolocate:
         self.WifiObject = wifiScannerLinux.WifiGrab()  # to grab BSSIDs
         self.ssids, self.bssids, self.rssi, self.channel = self.WifiObject.all()
 
+        # debug
+        print("SSIDS: " + str(self.ssids))
+        print("BSIDS: " + str(self.bssids))
+        print("RSSI: " + str(self.rssi))
+        print("Channels: " + str(self.channel))
+
     def buildJSON(self, considerIP='true'):
         if len(self.bssids) < 3:
             print 'Atleast two BSSIDs are required.'
@@ -47,6 +53,8 @@ class geolocate:
             'content-type': 'application/json',
         }
         # Payload structure reference: https://developers.google.com/maps/documentation/geolocation/intro#body
+        # debug
+        print("json: " + str(self.payload))
 
     def importJSON(self):  # Import JSON payload from file
         self.payload = json.load(open("geolocate.json"))
@@ -57,7 +65,10 @@ class geolocate:
     def request(self):  # Send request to geolocate and return the response
         try:
             self.response = requests.post(self.url, data=json.dumps(self.payload), headers=self.headers)
+            # debug
+            print("response: " + str(self.response))
             text = json.loads(self.response.text)
+            print("response text: " + str(text))
 
             if self.response.ok == False:  # Check if the response was ok
                 if text['error']['errors'][0]['reason'] == 'dailyLimitExceeded':
@@ -70,6 +81,8 @@ class geolocate:
                     print 'The request was valid, but no results were returned'
                 elif text['error']['errors'][0]['reason'] == 'parseError':
                     print 'The request body is not valid JSON'
+                elif text['error']['errors'][0]['reason'] == 'accessNotConfigured':
+                    print 'The API key is not yet configured.'
                 else:
                     print 'Unknown error in the geolocation response. Might be caught in an exception.'
         except Exception, e:
